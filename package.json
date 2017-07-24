@@ -1,6 +1,6 @@
 {
-    "name": "wcm-eventhandler-module",
-    "version": "0.0.0",
+    "name": "dig-events",
+    "version": "0.0.62",
     "description": "event handler module",
     "main": "app/routes/index.js",
     "scripts": {
@@ -11,10 +11,64 @@
         "event"
     ],
     "wcmModule": {
-        "frontend": null,
+        "frontend": {
+            "dirPath": "public/app/",
+            "assetsDirPath": "public/assets/",
+            "cssDirPath": "public/assets/css/",
+            "moduleConfig": {
+                "translationKey": "Events",
+                "operationType": "dig-events",
+                "icon": "bolt",
+                "type": "system",
+                "navigationItem": true,
+                "authentication": {
+                    "requiresLogin": true
+                }
+            }
+        },
         "backend": {
             "dirPath": "app/",
-            "variables": [],
+            "variables": [
+                {
+                    "group": "Config",
+                    "key": "eventHandler",
+                    "accordion": true,
+                    "variables": [
+                        {
+                            "label": "Event handler domain",
+                            "description": "Event handler API domain.",
+                            "key": "apiDomain",
+                            "value": "",
+                            "type": "text",
+                            "required": true
+                        },
+                        {
+                            "label": "Namespace",
+                            "description": "The namespace to send the events (usually 'wcm')",
+                            "key": "namespace",
+                            "value": "",
+                            "type": "text",
+                            "required": true
+                        },
+                        {
+                            "label": "Owner key",
+                            "description": "The namespace to send the events (usually 'wcm')",
+                            "key": "ownerKey",
+                            "value": "",
+                            "type": "text",
+                            "required": true
+                        },
+                        {
+                            "label": "apikey",
+                            "description": "You're api-store apikey",
+                            "key": "apikey",
+                            "value": "",
+                            "type": "text",
+                            "required": true
+                        }
+                    ]
+                }
+            ],
             "routeDirPaths": [
                 "app/routes/"
             ]
@@ -23,9 +77,12 @@
     "author": "Jeroen Valcke",
     "license": "MIT",
     "dependencies": {
+        "lodash": "~4.17.4",
+        "request": "~2.81.0",
         "rootpath": "~0.1.2"
     },
     "devDependencies": {
+        "@district01/eslint-config": "~1.0.0",
         "apidoc-swagger": "git+https://github.com/JvJefke/apidoc-swagger.git",
         "chai": "~3.5.0",
         "eslint": "~3.19.0",
