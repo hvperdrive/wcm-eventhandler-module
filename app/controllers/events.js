@@ -6,6 +6,7 @@ var ERROR_TYPES = require("app/middleware/errorInterceptor").ERROR_TYPES;
 var Emitter = require("app/middleware/emitter");
 
 var EventsModel = require("../models/events");
+var topicsHelper = require("../helpers/topics");
 
 module.exports.list = function list(req, res) {
 	var result = ["contentUpdated", "contentCreated", "contentRemoved"];
@@ -47,7 +48,7 @@ module.exports.list = function list(req, res) {
  */
 module.exports.read = function read(req, res) {
 	EventsModel.find({})
-        .populate("data.contentType")
+		.populate("data.contentType")
 		.then(function onSuccess(events) {
 			res.status(200).json(events);
 		}, function onError(responseError) {
@@ -94,21 +95,18 @@ module.exports.readOne = function readOne(req, res) {
 	}
 
 	EventsModel.findOne({ uuid: req.params.uuid })
-        .populate("data.contentType")
-		.then(
-			function onSuccess(event) {
-				if (event) {
-					return res.status(200).json(event);
-				}
-
-				return res.statu(404).json({
-					err: 'Event width uuid: "' + req.params.uuid + '" not found',
-				});
-			},
-			function onError(responseError) {
-				res.status(400).json(responseError);
+		.populate("data.contentType")
+		.then(function onSuccess(event) {
+			if (event) {
+				return res.status(200).json(event);
 			}
-		);
+
+			return res.status(404).json({
+				err: 'Event width uuid: "' + req.params.uuid + '" not found',
+			});
+		}, function onError(responseError) {
+			res.status(400).json(responseError);
+		});
 };
 
 /**
@@ -149,17 +147,24 @@ module.exports.update = function update(req, res) {
 		});
 	}
 
-	EventsModel.findOneAndUpdate({ uuid: req.params.uuid }, req.body, { new: true, setDefaultsOnInsert: true })
-		.then(function onSuccess(event) {
-			if (event) {
-				return res.status(200).json(event);
-			}
+	EventsModel.findOne({ uuid: req.params.uuid })
+		.lean()
+		.then(function onSuccess(oldEvent) {
+			return EventsModel.findOneAndUpdate({ uuid: req.params.uuid }, req.body, { new: true, setDefaultsOnInsert: true })
+				.then(function(newEvent) {
+					if (newEvent) {
+						return topicsHelper.update(oldEvent, newEvent);
+					}
 
-			return res.statu(404).json({
-				err: 'Event width uuid: "' + req.params.uuid + '" not found',
-			});
-		}, function onError(responseError) {
-			res.status(400).json(responseError);
+					throw { status: 404, err: "Event width uuid: '" + req.params.uuid + "' not found" };
+				});
+		}, function(error) {
+			throw { status: 400, err: error };
+		})
+		.then(function(newEvent) {
+			return res.status(200).json(newEvent);
+		}, function(error) {
+			return res.status(error.status || 400).json(error.err || error);
 		});
 };
 
@@ -195,16 +200,17 @@ module.exports.update = function update(req, res) {
  */
 module.exports.create = function create(req, res) {
 	EventsModel.create(req.body)
-		.then(function onSuccess(event) {
-			if (event) {
-				return res.status(200).json(event);
+		.then(function(event) {
+			if (!event) {
+				throw "Event not saved!";
 			}
 
-			return res.statu(404).json({
-				err: 'Event width uuid: "' + req.params.uuid + '" not found',
-			});
+			return topicsHelper.create(event);
+		})
+		.then(function onSuccess(event) {
+			return res.status(200).json(event);
 		}, function onError(responseError) {
-			res.status(400).json(responseError);
+			return res.status(400).json(responseError);
 		});
 };
 
@@ -227,9 +233,16 @@ module.exports.remove = function remove(req, res) {
 		});
 	}
 
-	EventsModel.remove({ uuid: req.params.uuid })
+	EventsModel.findOne({ uuid: req.params.uuid })
+		.then(function(event) {
+			return EventsModel.remove({ uuid: req.params.uuid })
+				.then(function() {
+					return event;
+				});
+		})
+		.then(topicsHelper.remove)
 		.then(function onSuccess() {
-			res.status(204).json();
+			res.status(204).send();
 		}, function onError(responseError) {
 			res.status(400).json(responseError);
 		});

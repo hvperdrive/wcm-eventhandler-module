@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.62.controllers")
+angular.module("dig-events_0.0.73.controllers")
     .controller("digEventsDetailController", [
 	"$scope",
 	"$controller",
@@ -26,6 +26,7 @@ angular.module("dig-events_0.0.62.controllers")
 		$scope.data = {
 			eventList: EventsList,
 			contentTypes: ContentTypes,
+			sources: Object.keys(EventsList.toJSON()),
 		};
 
 		// Extend the default resource controller

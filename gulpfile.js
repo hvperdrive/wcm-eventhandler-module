@@ -20,34 +20,34 @@ gulp.task("swagger", function() {
 	});
 
 	return gulp.src(["./swagger/output/swagger.json"])
-        .pipe(replace(/\/api\/1.0.0\//g, "/"))
-        .pipe(gulp.dest("./swagger/output/acpaas"));
+		.pipe(replace(/\/api\/1.0.0\//g, "/"))
+		.pipe(gulp.dest("./swagger/output/acpaas"));
 });
 
 // Copy all the necessary files into a temp folder
 gulp.task("prepareBuild", function() {
 	return gulp.src(["./app/**/*", "./public/**/*", "./package.json"], { base: "." })
-        .pipe(gulp.dest("./dist/source/" + packageConfig.name + "_" + packageConfig.version));
+		.pipe(gulp.dest("./dist/source/" + packageConfig.name + "_" + packageConfig.version));
 });
 // Zip the content of the temporary folder an put it in the dist/zip folder
 gulp.task("executeBuild", function() {
 	return gulp.src(["./dist/source/" + packageConfig.name + "_" + packageConfig.version + "/**/*"], { base: "./dist/source/" })
-        .pipe(zip(packageConfig.name + "_" + packageConfig.version + ".zip"))
-        .pipe(gulp.dest("./dist/zip"));
+		.pipe(zip(packageConfig.name + "_" + packageConfig.version + ".zip"))
+		.pipe(gulp.dest("./dist/zip"));
 });
 // Remove the temporary source folder.
 gulp.task("finishBuild", function() {
 	return gulp.src("./dist/source", { read: false })
-        .pipe(clean());
+		.pipe(clean());
 });
 
 gulp.task("templateCache", function() {
 	return gulp.src("./public/app/**/*.template.html")
-        .pipe(angularTemplatecache({
-	module: packageConfig.name + "_" + packageConfig.version,
-	root: "app/modules/" + packageConfig.name + "_" + packageConfig.version + "/public/app/",
-}))
-        .pipe(gulp.dest("./public/app/template-cache"));
+		.pipe(angularTemplatecache({
+			module: packageConfig.name + "_" + packageConfig.version,
+			root: "app/modules/" + packageConfig.name + "_" + packageConfig.version + "/public/app/",
+		}))
+		.pipe(gulp.dest("./public/app/template-cache"));
 });
 
 // Utility function for bumping the version at the desired level in the package.json file.
@@ -72,9 +72,9 @@ var bumpAngularModuleVersion = function bumpAngularModuleVersion(version) {
 	var reg2 = new RegExp("version: \"[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}\",", "g");
 
 	return gulp.src(["./public/app/**/*.js"])
-        .pipe(replace(reg, "\"" + packageConfig.name + "_" + version))
-        .pipe(replace(reg2, "version: \"" + version + "\","))
-        .pipe(gulp.dest("./public/app"));
+		.pipe(replace(reg, "\"" + packageConfig.name + "_" + version))
+		.pipe(replace(reg2, "version: \"" + version + "\","))
+		.pipe(gulp.dest("./public/app"));
 
 };
 
@@ -100,31 +100,31 @@ gulp.task("bumpMajorVersion", function() {
 // Bump the patch version and then build
 gulp.task("buildPatch", function() {
 	runSequence(
-        "bumpPatchVersion",
-        "build"
-    );
+		"bumpPatchVersion",
+		"build"
+	);
 });
 // Bump the minor version and then build
 gulp.task("buildMinor", function() {
 	runSequence(
-        "bumpMinorVersion",
-        "build"
-    );
+		"bumpMinorVersion",
+		"build"
+	);
 });
 // Bump the major version and then build
 gulp.task("buildMajor", function() {
 	runSequence(
-        "bumpMajorVersion",
-        "build"
-    );
+		"bumpMajorVersion",
+		"build"
+	);
 });
 
 // build the module
 gulp.task("build", function() {
 	runSequence(
-        "templateCache",
-        "prepareBuild",
-        "executeBuild",
-        "finishBuild"
-    );
+		"templateCache",
+		"prepareBuild",
+		"executeBuild",
+		"finishBuild"
+	);
 });

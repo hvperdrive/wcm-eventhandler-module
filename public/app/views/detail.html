@@ -3,12 +3,44 @@
 	<h1 class="c-page-title"><span translate>Edit</span> <i>{{itemData.data.name}}</i></h1>
 
 	<div ng-form name="resourceForms.itemForm">
+		<fieldset class="c-form__fieldset">
+			<legend class="c-form__fieldset__legend" translate>Meta information</legend>
+
+			<div class="form-section c-form__fieldset__content u-clear">
+				<field
+					class="u-width-6-6"
+					label="'Administration name' | translate"
+					secondary-label="'The reference name in the WCM' | translate"
+					name="title"
+					type="'text'"
+					model="itemData.meta.label"
+					field-data="resourceForms.metaForm"
+					required="true"
+					readonly="!_newInstance"
+					placeholder="'Administration name' | translate">
+				</field>
+
+				<field
+					class="u-width-6-6"
+					label="'Source' | translate"
+					name="source"
+					type="'select'"
+					model="itemData.meta.source"
+					placeholder="'Select a source' | translate"
+					disabled="!_newInstance"
+					field-data="resourceForms.metaForm"
+					required="true"
+					options="data.sources">
+				</field>
+			</div>
+		</fieldset>
 
 		<fieldset class="c-form__fieldset">
 			<legend class="c-form__fieldset__legend" translate>Event</legend>
 
 			<div class="form-section c-form__fieldset__content u-clear">
 				<field
+					ng-if="itemData.meta.source === 'content'"
 					class="u-width-6-6"
 					label="'Content type' | translate"
 					name="contentType"
@@ -17,7 +49,6 @@
 					track="uuid"
 					model="itemData.data.contentType"
 					placeholder="'Select a content type' | translate"
-					disabled="!_newInstance"
 					field-data="resourceForms.metaForm"
 					required="true"
 					options="data.contentTypes.data">
@@ -41,7 +72,7 @@
 											placeholder="'Select a event' | translate"
 											field-data="resourceForms.metaForm"
 											required="true"
-											options="data.eventList">
+											options="data.eventList[itemData.meta.source]">
 										</field>
 										<field
 											label="'Topic' | translate"

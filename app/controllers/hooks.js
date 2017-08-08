@@ -1,34 +1,34 @@
 var variablesHelper = require("../helpers/variables");
+var eventListener = require("./listener");
 
 var onConfigurationChanged = function onConfigurationChanged() {
-	console.log("on configuration changed");
-    // Reload config
+	console.log("Updating Event handler listener config (configuration changed)");
+	// Reload config
 	variablesHelper.reload();
 };
 
 var beforeRemove = function beforeRemove() {
-	console.log("before remove");
-};
-
-var onDisabled = function onDisabled() {
-	console.log("on disabled");
+	console.log("Removing Event handler listeners (module removed)");
+	eventListener.removeListeners();
 };
 
 var beforeDisable = function beforeDisable() {
-	console.log("before disable");
+	console.log("Removing Event handler listeners (module disabled)");
+	eventListener.removeListeners();
 };
 
-var onRemoved = function() {
-	console.log("on removed");
+var onEnabled = function onEnabled() {
+	console.log("Reinitializing Event handler listeners (module enabled)");
+	eventListener.reinitialize();
+	console.log("on enabled");
 };
 
 module.exports = function handleHooks(hooks) {
 	var myHooks = {
 		onConfigurationChanged: onConfigurationChanged,
 		beforeRemove: beforeRemove,
-		onRemoved: onRemoved,
-		onDisabled: onDisabled,
 		beforeDisable: beforeDisable,
+		onEnabled: onEnabled,
 	};
 
 	Object.assign(hooks, myHooks);

@@ -16,7 +16,6 @@ var DigEventsSchema = new Schema({
 		contentType: {
 			type: String,
 			ref: "ContentType",
-			required: true,
 		},
 		events: [{
 			name: {
@@ -30,6 +29,19 @@ var DigEventsSchema = new Schema({
 		}],
 	},
 	meta: {
+		label: {
+			type: String,
+			required: true,
+		},
+		safeLabel: {
+			type: String,
+			required: true,
+		},
+		source: {
+			type: String,
+			required: true,
+			default: "other",
+		},
 		created: {
 			type: Date,
 			required: true,

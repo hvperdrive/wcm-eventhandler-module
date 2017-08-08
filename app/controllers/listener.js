@@ -1,77 +1,93 @@
 var _ = require("lodash");
-var request = require("request");
-var url = require("url");
 
 var config = require("config")();
 var Emitter = require("app/middleware/emitter");
-var EventsModel = require("app/models/events");
-var variablesHelper = require("../helpers/variables");
+var EventsModel = require("../models/models/events");
+var eventRequestHelper = require("../helpers/eventRequest");
 
-var sendEvent = function sendEvent(name, data) {
-	if (!name || !data) {
-		return;
-	}
+var parseConfig = function parseConfig(items) {
 
-	var variables = variablesHelper();
-	var topic = config.name + "_" + name;
-	var apiDomain = variables.eventHandler.variables.apiDomain;
-	var namespace = variables.eventHandler.variables.namespace;
-
-	request({
-		url: url.resolve(apiDomain + "/" + namespace + "/" + topic + "/publish"),
-		method: "GET",
-		headers: {
-			"owner-key": variables.eventHandler.variables.ownerKey,
-			"apikey": variables.eventHandler.variables.apikey,
-		},
-		body: data,
-	}, function(error, response, body) {
-		if (error || response.statusCode >= 400) {
-			console.error("Emitting event failed!");
-			console.error(response.statusCode, body);
-		}
-
-		return;
-	});
-
-};
-
-var parseConfig = function parseConfig() {
-	var reduceEventItem = function reduceEventItem(acc, item) {
-		acc[item.name] = item.topic;
-
-		return acc;
-	};
-
-	var reduceConfigItem = function reduceConfigItem(acc, item) {
+	var contentFilter = function contentFilter(item) {
 		var ct = _.get(item, "data.contentType.meta.safeLabel");
 
 		if (!ct) {
-			return acc;
+			return false;
 		}
 
-		acc[ct] = _.reduce(item.data.events, reduceEventItem, {});
+		return function(data) {
+			var ctLabel = _.get(data, "meta.contentType.meta.safeLabel", null);
+
+			return ct === ctLabel;
+		};
+	};
+
+	var setFilter = function setFilter(event, item) {
+		var source = _.get(item, "meta.source", false);
+
+		if (source === "content") {
+			return contentFilter(item);
+		}
+	};
+
+	var reduceConfigItem = function reduceConfigItem(acc, item) {
+
+		_.forEach(_.get(item, "data.events", []), function(event) {
+			if (!acc[event.name]) {
+				acc[event.name] = [];
+			}
+
+			acc[event.name].push({
+				topic: event.topic,
+				filter: setFilter(event, item),
+			});
+		});
 
 		return acc;
 	};
 
+	return _.reduce(items, reduceConfigItem, {});
+};
 
-	return _.reduce(this.config, reduceConfigItem, {});
+var sendEvent = function sendEvent(event, data) {
+	if (!event || !event.topic || !data) {
+		return;
+	}
+
+	var topic = config.name + "_" + event.topic;
+
+	return eventRequestHelper("PUT", topic + "/publish", data);
+};
+
+var getRequiredEvents = function getRequiredEvents(name, data) {
+	var eventGroup = this.config[name];
+
+	return _.filter(eventGroup, function(event) {
+		if (typeof event.filter === "function") {
+			return event.filter(data);
+		} else if (event.filter === false) {
+			return false;
+		}
+
+		return true;
+	});
 };
 
 var selector = function selector(name, data) {
-	var ct = _.get(data, "meta.contentType", null);
+	var requiredEvents = getRequiredEvents.call(this, name, data);
 
-	if (ct && this.config[ct] && (this.config[ct])[name]) {
-		sendEvent.call(this, name, data);
+	if (!Array.isArray(requiredEvents) || !requiredEvents.length) {
+		return;
 	}
 
+	_.forEach(requiredEvents, function(event) {
+		sendEvent.call(this, event, data);
+	}.bind(this));
 };
 
 var registerListeners = function registerListeners() {
 	var me = this;
 
-	_.forEach(Emitter.listRegisterdEvents(), function(eventName) {
+	_.forEach(_.flatten(_.values(Emitter.listRegisterdEvents())), function(eventName) {
 		var cb = function(data) {
 			selector.call(me, eventName, data);
 		};
@@ -87,7 +103,7 @@ var registerListeners = function registerListeners() {
 function Listener() {
 	this.config = null;
 	this.callbacks = [];
-	this.reloadConfig();
+	this.reloadConfig.call(this);
 
 	registerListeners.call(this);
 }
@@ -103,9 +119,14 @@ Listener.prototype.reloadConfig = function reloadConfig() {
 		);
 };
 
+Listener.prototype.reinitialize = function reinitialize() {
+	this.reloadConfig.call(this);
+	registerListeners.call(this);
+};
+
 Listener.prototype.removeListeners = function removeListeners() {
 	_.forEach(this.callbacks, function(cb) {
-		Emitter.removeListener(cb.name, cb);
+		Emitter.removeListener(cb.name, cb.cb);
 	});
 };
 

@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.62")
+angular.module("dig-events_0.0.73")
     .config([
 
 	"$stateProvider",
@@ -47,7 +47,7 @@ angular.module("dig-events_0.0.62")
 						}
 					}],
 					EventsList: ["digEventsFactory", function(digEventsFactory) {
-						return digEventsFactory.query({ listController: "list" }).$promise;
+						return digEventsFactory.get({ listController: "list" }).$promise;
 					}],
 					ContentTypes: ["$stateParams", "contentTypeFactory", function($stateParams, contentTypeFactory) {
 						return contentTypeFactory.get({ limit: -1 }).$promise;
