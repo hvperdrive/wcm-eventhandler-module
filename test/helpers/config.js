@@ -1,3 +1,5 @@
-module.exports = {
-	name: "test",
+module.exports = function() {
+	return {
+		name: "test",
+	};
 };

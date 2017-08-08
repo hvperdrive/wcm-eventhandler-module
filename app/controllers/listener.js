@@ -1,8 +1,9 @@
 var _ = require("lodash");
+var Q = require("q");
 
 var config = require("config")();
 var Emitter = require("app/middleware/emitter");
-var EventsModel = require("../models/models/events");
+var EventsModel = require("../models/events");
 var eventRequestHelper = require("../helpers/eventRequest");
 
 var parseConfig = function parseConfig(items) {
@@ -50,7 +51,7 @@ var parseConfig = function parseConfig(items) {
 
 var sendEvent = function sendEvent(event, data) {
 	if (!event || !event.topic || !data) {
-		return;
+		return Q.reject();
 	}
 
 	var topic = config.name + "_" + event.topic;
@@ -125,9 +126,11 @@ Listener.prototype.reinitialize = function reinitialize() {
 };
 
 Listener.prototype.removeListeners = function removeListeners() {
-	_.forEach(this.callbacks, function(cb) {
+	_.forEach(this.callbacks, function(cb, index) {
 		Emitter.removeListener(cb.name, cb.cb);
-	});
+	}.bind(this));
+
+	this.callbacks = [];
 };
 
 module.exports = new Listener();

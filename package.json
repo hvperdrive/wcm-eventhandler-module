@@ -78,6 +78,7 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "~4.17.4",
+    "q": "~1.5.0",
     "request": "~2.81.0",
     "rootpath": "~0.1.2"
   },
@@ -103,6 +104,7 @@
     "node-uuid": "~1.4.8",
     "proxyquire": "~1.8.0",
     "rewire": "~2.5.2",
+    "rewire-global": "~1.0.11",
     "run-sequence": "~1.2.2"
   }
 }
