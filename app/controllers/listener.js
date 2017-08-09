@@ -1,5 +1,4 @@
 var _ = require("lodash");
-var Q = require("q");
 
 var config = require("config")();
 var Emitter = require("app/middleware/emitter");
@@ -17,7 +16,6 @@ var parseConfig = function parseConfig(items) {
 
 		return function(data) {
 			var ctLabel = _.get(data, "meta.contentType.meta.safeLabel", null);
-
 			return ct === ctLabel;
 		};
 	};
@@ -126,9 +124,9 @@ Listener.prototype.reinitialize = function reinitialize() {
 };
 
 Listener.prototype.removeListeners = function removeListeners() {
-	_.forEach(this.callbacks, function(cb, index) {
+	_.forEach(this.callbacks, function(cb) {
 		Emitter.removeListener(cb.name, cb.cb);
-	}.bind(this));
+	});
 
 	this.callbacks = [];
 };
