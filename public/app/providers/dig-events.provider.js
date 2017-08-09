@@ -1,12 +1,12 @@
 "use strict";
 
-angular.module("dig-events_0.0.73")
+angular.module("dig-events_0.0.74")
     .provider("digEventsConfig", [
 	function membersConfig() {
 
 		this.API = {
 			name: "dig-events",
-			version: "0.0.73",
+			version: "0.0.74",
 			basePath: "app/modules/",
 		};
 
