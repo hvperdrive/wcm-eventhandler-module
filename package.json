@@ -1,6 +1,6 @@
 {
     "name": "dig-events",
-    "version": "0.0.74",
+    "version": "0.0.76",
     "description": "event handler module",
     "main": "app/routes/index.js",
     "scripts": {

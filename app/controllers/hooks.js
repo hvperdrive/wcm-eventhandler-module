@@ -20,7 +20,6 @@ var beforeDisable = function beforeDisable() {
 var onEnabled = function onEnabled() {
 	console.log("Reinitializing Event handler listeners (module enabled)");
 	eventListener.reinitialize();
-	console.log("on enabled");
 };
 
 module.exports = function handleHooks(hooks) {

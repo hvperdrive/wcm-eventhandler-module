@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.74.controllers")
+angular.module("dig-events_0.0.76.controllers")
     .controller("digEventsOverviewController", [
 
 	"$scope",

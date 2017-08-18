@@ -1,4 +1,5 @@
 var _ = require("lodash");
+var Q = require("q");
 
 var config = require("config")();
 var Emitter = require("app/middleware/emitter");
@@ -16,6 +17,7 @@ var parseConfig = function parseConfig(items) {
 
 		return function(data) {
 			var ctLabel = _.get(data, "meta.contentType.meta.safeLabel", null);
+
 			return ct === ctLabel;
 		};
 	};
@@ -79,8 +81,8 @@ var selector = function selector(name, data) {
 	}
 
 	_.forEach(requiredEvents, function(event) {
-		sendEvent.call(this, event, data);
-	}.bind(this));
+		Q(sendEvent(event, data));
+	});
 };
 
 var registerListeners = function registerListeners() {
