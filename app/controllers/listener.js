@@ -74,7 +74,6 @@ var getRequiredEvents = function getRequiredEvents(name, data) {
 };
 
 var selector = function selector(name, data) {
-	console.log(name, data);
 	var requiredEvents = getRequiredEvents.call(this, name, data);
 
 	if (!Array.isArray(requiredEvents) || !requiredEvents.length) {
@@ -87,14 +86,14 @@ var selector = function selector(name, data) {
 };
 
 var registerListeners = function registerListeners() {
-	Emitter.prependAny(selector.bind(this));
+	Emitter.prependAny(this.cb);
 };
 
 function Listener() {
 	this.config = null;
-	this.reloadConfig.call(this);
+	this.cb = selector.bind(this);
 
-	registerListeners.call(this);
+	this.reinitialize.call(this);
 }
 
 Listener.prototype.reloadConfig = function reloadConfig() {
@@ -114,7 +113,7 @@ Listener.prototype.reinitialize = function reinitialize() {
 };
 
 Listener.prototype.removeListeners = function removeListeners() {
-	Emitter.offAny(listener);
+	Emitter.offAny(this.cb);
 };
 
 module.exports = new Listener();

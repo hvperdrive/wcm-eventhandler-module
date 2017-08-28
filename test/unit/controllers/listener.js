@@ -46,13 +46,10 @@ describe("ListenerController", function() {
 		it("Should listen on 5 events when events mock is passed", function() {
 			var registerListeners = listener.__get__("registerListeners");
 
-			// Mock required this data
-			this.callbacks = [];
+			registerListeners.call(listener);
 
-			registerListeners.call(this);
-
-			expect(this.callbacks).to.be.an("array");
-			expect(this.callbacks).to.have.length(9);
+			expect(emitterMock.listenersAny()).to.be.an("array");
+			expect(emitterMock.listenersAny()).to.have.length(1);
 		});
 	});
 
@@ -105,13 +102,16 @@ describe("ListenerController", function() {
 	});
 
 	describe("removeListeners", function() {
+		beforeEach(function() {
+			emitterMock.removeAllListeners();
+		});
 		it("Should remove all the listeners registered", function() {
-			expect(listener.callbacks.length).to.be.greaterThan(0);
+			expect(emitterMock.listenersAny().length).to.be.greaterThan(0);
 
 			listener.removeListeners();
 
-			expect(listener.callbacks).to.be.an("array");
-			expect(listener.callbacks).to.have.length(0);
+			expect(emitterMock.listenersAny()).to.be.an("array");
+			expect(emitterMock.listenersAny()).to.have.length(0);
 		});
 	});
 });

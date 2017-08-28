@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.84.factories")
+angular.module("dig-events_0.0.117.factories")
     .factory("digEventsFactory", [
 
 	"$resource",

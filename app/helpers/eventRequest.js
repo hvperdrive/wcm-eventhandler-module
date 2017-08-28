@@ -1,4 +1,5 @@
 var Q = require("q");
+var _ = require("lodash");
 var request = require("request");
 
 var variablesHelper = require("../helpers/variables");
@@ -7,15 +8,15 @@ module.exports = function eventRequest(method, path, body) {
 	var d = Q.defer();
 
 	var variables = variablesHelper();
-	var apiDomain = variables.eventHandler.variables.apiDomain;
-	var namespace = variables.eventHandler.variables.namespace;
+	var apiDomain = _.get(variables, "eventHandler.variables.apiDomain", "");
+	var namespace = _.get(variables, "eventHandler.variables.namespace", "");
 
 	var reqOptions = {
 		url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + namespace + "/" + path,
 		method: method,
 		headers: {
-			"owner-key": variables.eventHandler.variables.ownerKey,
-			"apikey": variables.eventHandler.variables.apikey,
+			"owner-key": _.get(variables, "eventHandler.variables.ownerKey", undefined),
+			"apikey": _.get(variables, "eventHandler.variables.apikey", undefined),
 		},
 	};
 
@@ -26,12 +27,12 @@ module.exports = function eventRequest(method, path, body) {
 		});
 	}
 
-	request(reqOptions, function(error, response, body) {
+	request(reqOptions, function(error, response, b) {
 		if (error || !response || response.statusCode >= 400) {
-			return d.reject(error || body);
+			return d.reject(error || b);
 		}
 
-		return d.resolve(body);
+		return d.resolve(b);
 	});
 
 

@@ -22,12 +22,17 @@ var onEnabled = function onEnabled() {
 	eventListener.reinitialize();
 };
 
+var onLoadComplete = function onLoadComplete() {
+	variablesHelper.reload();
+};
+
 module.exports = function handleHooks(hooks) {
 	var myHooks = {
 		onConfigurationChanged: onConfigurationChanged,
 		beforeRemove: beforeRemove,
 		beforeDisable: beforeDisable,
 		onEnabled: onEnabled,
+		onLoadComplete: onLoadComplete,
 	};
 
 	Object.assign(hooks, myHooks);

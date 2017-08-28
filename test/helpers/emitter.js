@@ -1,5 +1,8 @@
-var Emitter = require("events");
-var emitter = new Emitter();
+var Emitter = require("eventemitter2").EventEmitter2;
+var emitter = new Emitter({
+	wildcard: true,
+	removeListenerAny: false,
+});
 
 module.exports = emitter;
 module.exports.listRegisterdEvents = function() {
