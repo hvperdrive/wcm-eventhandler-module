@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.76.controllers")
+angular.module("dig-events_0.0.84.controllers")
     .controller("digEventsOverviewController", [
 
 	"$scope",
@@ -31,8 +31,8 @@ angular.module("dig-events_0.0.76.controllers")
 				},
 			},
 			columns: [{
-				columnName: LabelService.getString("Content-type"),
-				key: "data.contentType.meta.label",
+				columnName: LabelService.getString("Name"),
+				key: "meta.label",
 				sortable: true,
 			}, {
 				columnName: LabelService.getString("Last edit"),

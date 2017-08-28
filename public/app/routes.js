@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_0.0.76")
+angular.module("dig-events_0.0.84")
     .config([
 
 	"$stateProvider",
