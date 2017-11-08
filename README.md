@@ -1,9 +1,9 @@
-# wcm-solr-module-am
+# wcm-eventhandler-module
 
-This module gives you the opportunity to index items in Apache Solr.
+This module gives you the opportunity to map WCM internal events to the Digipolis eventhandler.
 
 ## Prerequisites
- - A running implementation of the Pelorus CMS is needed either locally or on a server.
+ - A running implementation of the Pelorus CMS (WCM) is needed either locally or on a server.
  (see https://github.com/hvperdrive/pelorus-cms)
  - Node needs to be installed on the system.
  (see https://nodejs.org)
@@ -18,18 +18,24 @@ This module gives you the opportunity to index items in Apache Solr.
 ## Usage
 
 ### API
-There is no API available.
+There is no public API available.
 
 ### Implementation
 
-#### ArcGIS urls
+#### Setting up
 1. Add all the required settings  
     1.1. Go to modules  
-    1.2. Edit the Solr module  
-    1.3. Under __Variables__ open the __Solr__  
+    1.2. Edit the dig-events module  
+    1.3. Under __Variables__ open __Config__  
     1.4. Enter data for all available fields  
     1.5. Save the module  
-2. Every project (for AM) will be indexed and updated automatically upon saving or deleting projects.
+2. The menu option __Events__ should have been added if everything went correctly
+3. Map an internal event to an Event handler Topic  
+    3.1. Click on __New Event__.  
+    3.2. Add an  __administration name__ (will only be used to name the setup)  
+    3.3. Select the wcm event group in __Source__  
+    3.4. Click on __Add Event__ to map an event of the source to a topic  
+    3.5 Save the event.
 
 ## Module development
 
