@@ -15,8 +15,8 @@ module.exports = function eventRequest(method, path, body) {
 		url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + namespace + "/" + path,
 		method: method,
 		headers: {
-			"owner-key": _.get(variables, "eventHandler.variables.ownerKey", undefined),
-			"apikey": _.get(variables, "eventHandler.variables.apikey", undefined),
+			"owner-key": _.get(variables, "eventHandler.variables.ownerKey"),
+			"apikey": _.get(variables, "eventHandler.variables.apikey"),
 		},
 	};
 

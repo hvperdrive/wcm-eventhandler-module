@@ -1,0 +1,225 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "dig-events",
+		"version": "0.0.117",
+		"description": "event handler module"
+	},
+	"paths": {
+		"/dig-events/{uuid}": {
+			"delete": {
+				"tags": [
+					"Events"
+				],
+				"description": "Delete an event setup.",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "uuid",
+						"in": "path",
+						"required": true,
+						"type": "string",
+						"description": "Events uuid "
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Empty response "
+					},
+					"400": {
+						"description": "Bad request ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					},
+					"412": {
+						"description": "Precondition failed ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": [
+					"Events"
+				],
+				"description": "Get an event setup",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "uuid",
+						"in": "path",
+						"required": true,
+						"type": "string",
+						"description": "Event uuid "
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success "
+					},
+					"400": {
+						"description": "Bad request ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					},
+					"404": {
+						"description": "Not found ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					},
+					"412": {
+						"description": "Precondition failed ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": [
+					"Events"
+				],
+				"description": "Update Event setup",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "uuid",
+						"in": "path",
+						"required": true,
+						"type": "string",
+						"description": "Event uuid "
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success "
+					},
+					"400": {
+						"description": "Bad request ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					},
+					"404": {
+						"description": "Not found ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					},
+					"412": {
+						"description": "Precondition failed ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					}
+				}
+			}
+		},
+		"/dig-events/": {
+			"get": {
+				"tags": [
+					"Events"
+				],
+				"description": "Get all event setups",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "Success "
+					},
+					"500": {
+						"description": "Bad request ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					}
+				}
+			}
+		},
+		"/dig-events": {
+			"post": {
+				"tags": [
+					"Events"
+				],
+				"description": "create an event.",
+				"consumes": [
+					"application/json"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": ""
+					},
+					"400": {
+						"description": "Bad request ",
+						"schema": {
+							"$ref": "#/definitions/Error"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Error": {
+			"type": "object",
+			"description": "Error response object",
+			"properties": {
+				"type": {
+					"type": "string",
+					"description": "Link to Error page. "
+				},
+				"title": {
+					"type": "string",
+					"description": "Title of the error. "
+				},
+				"status": {
+					"type": "string",
+					"description": "HTTP status code. "
+				},
+				"identifier": {
+					"type": "string",
+					"description": "Unique ID as logged in the database. "
+				},
+				"code": {
+					"type": "string",
+					"description": "Error type code. "
+				}
+			},
+			"required": [
+				"type",
+				"title",
+				"status",
+				"identifier",
+				"code"
+			]
+		}
+	}
+}
