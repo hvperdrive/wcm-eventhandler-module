@@ -19,30 +19,11 @@ module.exports.list = function list(req, res) {
 };
 
 /**
- * @api {GET} /api/1.0.0/dig-events/ Get all members.
+ * @api {GET} /api/1.0.0/dig-events/ Get all event setups
  * @apiGroup Events
  * @apiVersion 1.0.0
  *
- * @apiSuccess (200) {Object[]} Members200All Success
- * @apiSuccess (200) {Object} Members200All Success
- * @apiSuccess (200) {String} Members200All._id Mongo _id
- * @apiSuccess (200) {String} Members200All.uuid Member uuid
- * @apiSuccess (200) {Object} Members200All.data Data
- * @apiSuccess (200) {String} Members200All.data.external_id of member
- * @apiSuccess (200) {String} Members200All.data.username Username of the member
- * @apiSuccess (200) {String} Members200All.data.firstName First name of the member
- * @apiSuccess (200) {String} Members200All.data.lastName Last name of the member
- * @apiSuccess (200) {String} Members200All.data.fullName Full name of the member
- * @apiSuccess (200) {String} Members200All.data.avatarUrl Avatar URL
- * @apiSuccess (200) {String} Members200All.data.phone Phone number
- * @apiSuccess (200) {String} Members200All.data.email Email address
- * @apiSuccess (200) {Object} Members200All.meta Metadata
- * @apiSuccess (200) {Date} Members200All.meta.created Created at
- * @apiSuccess (200) {Date} Members200All.meta.lastModified Last modified at
- * @apiSuccess (200) {string} Members200All.meta.type Type of login source
- * @apiSuccess (200) {string} Members200All.meta.enabled Member has accessToken
- * @apiSuccess (200) {Object} Members200All.meta.token Stripped down version of the token object
- * @apiSuccess (200) {Date} Members200All.meta.token.expires Token expires date.
+ * @apiSuccess (200) {Object[]} Events200All Success
  *
  * @apiError (500) {Object} Error Bad request
  */
@@ -57,30 +38,12 @@ module.exports.read = function read(req, res) {
 };
 
 /**
- * @api {GET} /api/1.0.0/dig-events/:uuid Get all members.
+ * @api {GET} /api/1.0.0/dig-events/:uuid Get an event setup
  * @apiGroup Events
- * @apiParam {String} uuid Members uuid
+ * @apiParam {String} uuid Event uuid
  * @apiVersion 1.0.0
  *
- * @apiSuccess (200) {Object} Members200One Success
- * @apiSuccess (200) {String} Members200One._id Mongo _id
- * @apiSuccess (200) {String} Members200One.uuid Member uuid
- * @apiSuccess (200) {Object} Members200One.data Data
- * @apiSuccess (200) {String} Members200One.data.external_id of member
- * @apiSuccess (200) {String} Members200One.data.username Username of the member
- * @apiSuccess (200) {String} Members200One.data.firstName First name of the member
- * @apiSuccess (200) {String} Members200One.data.lastName Last name of the member
- * @apiSuccess (200) {String} Members200One.data.fullName Full name of the member
- * @apiSuccess (200) {String} Members200One.data.avatarUrl Avatar URL
- * @apiSuccess (200) {String} Members200One.data.phone Phone number
- * @apiSuccess (200) {String} Members200One.data.email Email address
- * @apiSuccess (200) {Object} Members200One.meta Metadata
- * @apiSuccess (200) {Date} Members200One.meta.created Created at
- * @apiSuccess (200) {Date} Members200One.meta.lastModified Last modified at
- * @apiSuccess (200) {string} Members200One.meta.type Type of login source
- * @apiSuccess (200) {string} Members200One.meta.enabled Member has accessToken
- * @apiSuccess (200) {Object} Members200One.meta.token Stripped down version of the token object
- * @apiSuccess (200) {Date} Members200One.meta.token.expires Token expires date.
+ * @apiSuccess (200) {Object} Events200One Success
  *
  * @apiError (412) {Object} Error Precondition failed
  * @apiError (404) {Object} Error Not found
@@ -102,7 +65,7 @@ module.exports.readOne = function readOne(req, res) {
 			}
 
 			return res.status(404).json({
-				err: 'Event width uuid: "' + req.params.uuid + '" not found',
+				err: 'Event with uuid: "' + req.params.uuid + '" not found',
 			});
 		}, function onError(responseError) {
 			res.status(400).json(responseError);
@@ -110,30 +73,12 @@ module.exports.readOne = function readOne(req, res) {
 };
 
 /**
- * @api {PUT} /api/1.0.0/dig-events/:uuid Get all members.
+ * @api {PUT} /api/1.0.0/dig-events/:uuid Update Event setup
  * @apiGroup Events
- * @apiParam {String} uuid Members uuid
+ * @apiParam {String} uuid Event uuid
  * @apiVersion 1.0.0
  *
- * @apiSuccess (200) {Object} Members200Update Success
- * @apiSuccess (200) {String} Members200Update._id Mongo _id
- * @apiSuccess (200) {String} Members200Update.uuid Member uuid
- * @apiSuccess (200) {Object} Members200Update.data Data
- * @apiSuccess (200) {String} Members200Update.data.external_id of member
- * @apiSuccess (200) {String} Members200Update.data.username Username of the member
- * @apiSuccess (200) {String} Members200Update.data.firstName First name of the member
- * @apiSuccess (200) {String} Members200Update.data.lastName Last name of the member
- * @apiSuccess (200) {String} Members200Update.data.fullName Full name of the member
- * @apiSuccess (200) {String} Members200Update.data.avatarUrl Avatar URL
- * @apiSuccess (200) {String} Members200Update.data.phone Phone number
- * @apiSuccess (200) {String} Members200Update.data.email Email address
- * @apiSuccess (200) {Object} Members200Update.meta Metadata
- * @apiSuccess (200) {Date} Members200Update.meta.created Created at
- * @apiSuccess (200) {Date} Members200Update.meta.lastModified Last modified at
- * @apiSuccess (200) {string} Members200Update.meta.type Type of login source
- * @apiSuccess (200) {string} Members200Update.meta.enabled Member has accessToken
- * @apiSuccess (200) {Object} Members200Update.meta.token Stripped down version of the token object
- * @apiSuccess (200) {Date} Members200Update.meta.token.expires Token expires date.
+ * @apiSuccess (200) {Object} Events200Update Success
  *
  * @apiError (412) {Object} Error Precondition failed
  * @apiError (404) {Object} Error Not found
@@ -171,31 +116,10 @@ module.exports.update = function update(req, res) {
 /**
  * @api {POST} /api/1.0.0/dig-events create an event.
  * @apiGroup Events
- * @apiParam {String} uuid Members uuid
  * @apiVersion 1.0.0
  *
- * @apiSuccess (200) {Object} Members200Update Success
- * @apiSuccess (200) {String} Members200Update._id Mongo _id
- * @apiSuccess (200) {String} Members200Update.uuid Member uuid
- * @apiSuccess (200) {Object} Members200Update.data Data
- * @apiSuccess (200) {String} Members200Update.data.external_id of member
- * @apiSuccess (200) {String} Members200Update.data.username Username of the member
- * @apiSuccess (200) {String} Members200Update.data.firstName First name of the member
- * @apiSuccess (200) {String} Members200Update.data.lastName Last name of the member
- * @apiSuccess (200) {String} Members200Update.data.fullName Full name of the member
- * @apiSuccess (200) {String} Members200Update.data.avatarUrl Avatar URL
- * @apiSuccess (200) {String} Members200Update.data.phone Phone number
- * @apiSuccess (200) {String} Members200Update.data.email Email address
- * @apiSuccess (200) {Object} Members200Update.meta Metadata
- * @apiSuccess (200) {Date} Members200Update.meta.created Created at
- * @apiSuccess (200) {Date} Members200Update.meta.lastModified Last modified at
- * @apiSuccess (200) {string} Members200Update.meta.type Type of login source
- * @apiSuccess (200) {string} Members200Update.meta.enabled Member has accessToken
- * @apiSuccess (200) {Object} Members200Update.meta.token Stripped down version of the token object
- * @apiSuccess (200) {Date} Members200Update.meta.token.expires Token expires date.
+ * @apiSuccess (200) {Object} Events200CreateSuccess
  *
- * @apiError (412) {Object} Error Precondition failed
- * @apiError (404) {Object} Error Not found
  * @apiError (400) {Object} Error Bad request
  */
 module.exports.create = function create(req, res) {
@@ -215,19 +139,19 @@ module.exports.create = function create(req, res) {
 };
 
 /**
- * @api {DELETE} /api/1.0.0/dig-events/:uuid Get all members.
+ * @api {DELETE} /api/1.0.0/dig-events/:uuid Delete an event setup.
  * @apiGroup Events
- * @apiParam {String} uuid Members uuid
+ * @apiParam {String} uuid Events uuid
  * @apiVersion 1.0.0
  *
- * @apiSuccess (204) empty Empty response
+ * @apiSuccess (204) Empty Empty response
  *
  * @apiError (412) {Object} Error Precondition failed
  * @apiError (400) {Object} Error Bad request
  */
 module.exports.remove = function remove(req, res) {
 	if (!req.params.uuid) {
-		return res.status(400).json({
+		return res.status(412).json({
 			logType: ERROR_TYPES.NO_UUID,
 			err: "There is no uuid parameter specified!",
 		});
