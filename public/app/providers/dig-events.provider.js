@@ -1,19 +1,23 @@
 "use strict";
 
 angular.module("dig-events_0.0.117")
-    .provider("digEventsConfig", [
-	function membersConfig() {
+	.provider("digEventsConfig", [
+		"MODULE_ENV_CONFIG",
 
-		this.API = {
-			name: "dig-events",
-			version: "0.0.117",
-			basePath: "app/modules/",
-		};
+		function membersConfig(MODULE_ENV_CONFIG) {
 
-		this.API.modulePath = this.API.basePath + this.API.name + "_" + this.API.version + "/";
+			this.API = {
+				name: MODULE_ENV_CONFIG.angularModule,
+				version: "0.1.0",
+				feDirPath: MODULE_ENV_CONFIG.feDirPath,
+				assetsDirPath: MODULE_ENV_CONFIG.assetsDirPath,
+				cssDirPath: MODULE_ENV_CONFIG.cssDirPath,
+			};
 
-		this.$get = function get() {
-			return this.API;
-		};
-	},
-]);
+			this.API.modulePath = this.API.feDirPath;
+
+			this.$get = function get() {
+				return this.API;
+			};
+		},
+	]);

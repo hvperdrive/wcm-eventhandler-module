@@ -1,8 +1,8 @@
 var _ = require("lodash");
 var Q = require("q");
 
-var config = require("config")();
-var Emitter = require("app/middleware/emitter");
+var config = require("@wcm/module-helper").getConfig();
+var Emitter = require("@wcm/module-helper").emitter;
 var EventsModel = require("../models/events");
 var eventRequestHelper = require("../helpers/eventRequest");
 
@@ -60,6 +60,10 @@ var sendEvent = function sendEvent(event, data) {
 };
 
 var getRequiredEvents = function getRequiredEvents(name, data) {
+	if (this.config === null || !this.config[name]) {
+		return;
+	}
+
 	var eventGroup = this.config[name];
 
 	return _.filter(eventGroup, function(event) {
@@ -108,7 +112,7 @@ Listener.prototype.reloadConfig = function reloadConfig() {
 };
 
 Listener.prototype.reinitialize = function reinitialize() {
-	this.reloadConfig.call(this);
+	this.reloadConfig();
 	registerListeners.call(this);
 };
 
