@@ -6,14 +6,14 @@ var eventsController = require("../controllers/events");
 // Get the configuration of the WCM
 var config = require("@wcm/module-helper").getConfig();
 // This is a helper middleware function to check if the user is logged in
-var ProfileSecurity = require("@wcm/module-helper").ProfileSecurity;
+var ProfileSecurity = require("@wcm/module-helper").profileSecurity;
 // This is a helper middleware function to specify which method is used. This will be used in the PermissionsSecurity function.
 // There are four methods available: read, create, update and delete.
-var MethodSecurity = require("@wcm/module-helper").MethodSecurity;
+var MethodSecurity = require("@wcm/module-helper").methodSecurity;
 // This is a helper middleware function generator that returns a middleware function that can be injected into route as seen below.
 // The function will check if the user has the right permissions to execute this action.
 // You need to specify the operation type that needs to be checked against (in this case it is the operation type specified in our package.json file).
-var PermissionsSecurity = require("@wcm/module-helper").PermissionsSecurity("dig-events");
+var PermissionsSecurity = require("@wcm/module-helper").permissionsSecurity("dig-events");
 // Modifies meta object of the body
 var Meta = require("app/helpers/meta");
 

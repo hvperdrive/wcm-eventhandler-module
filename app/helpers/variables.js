@@ -1,6 +1,6 @@
 var Q = require("q");
 
-var VariableHelper = require("@wcm/module-helper").Variables;
+var VariableHelper = require("@wcm/module-helper").variables;
 var packageConfig = require("../../package.json");
 
 var packageInfo = null;
