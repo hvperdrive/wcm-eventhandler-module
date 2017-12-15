@@ -1,6 +1,6 @@
 {
     "name": "@wcm/dig-events",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "event handler module",
     "main": "app/index.js",
     "scripts": {
@@ -74,7 +74,7 @@
         "q": "~1.5.0",
         "request": "~2.81.0",
         "rootpath": "~0.1.2",
-        "@wcm/module-helper": "git+git@github.com:hvperdrive/wcm-module-helper.git"
+        "@wcm/module-helper": "1.0.0"
     },
     "devDependencies": {
         "@district01/eslint-config": "~1.0.0",
