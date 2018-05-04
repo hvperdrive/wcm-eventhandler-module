@@ -1,7 +1,11 @@
 var Emitter = require("eventemitter2").EventEmitter2;
+
 var emitter = new Emitter({
 	wildcard: true,
-	removeListenerAny: false,
+	delimiter: ".",
+	newListener: true,
+	maxListeners: 0,
+	verboseMemoryLeak: true,
 });
 
 module.exports = emitter;
