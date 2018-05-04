@@ -6,6 +6,7 @@ var uuid = require("node-uuid");
 
 delete mongoose.models.DigEvents;
 delete mongoose.modelSchemas.DigEvents;
+
 var DigEventsSchema = new Schema({
 	uuid: {
 		type: String,

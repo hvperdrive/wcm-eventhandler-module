@@ -3,7 +3,7 @@
 
 require("rootpath")();
 var ERROR_TYPES = require("app/middleware/errorInterceptor").ERROR_TYPES;
-var Emitter = require("app/middleware/emitter");
+var Emitter = require("@wcm/module-helper").emitter;
 
 var EventsModel = require("../models/events");
 var topicsHelper = require("../helpers/topics");
