@@ -16,7 +16,7 @@ module.exports.setPackageInfo = function setPackageInfo(info) {
 	packageConfig = info;
 };
 
-module.exports.getPackageInof = function getPackageInfo() {
+module.exports.getPackageInfo = function getPackageInfo() {
 	return packageConfig;
 };
 
