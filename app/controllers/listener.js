@@ -1,24 +1,30 @@
 const _ = require("lodash");
 const Q = require("q");
+const { __, compose, pathOr } = require("ramda");
 
 const config = require("@wcm/module-helper").getConfig();
 const Emitter = require("@wcm/module-helper").emitter;
 const EventsModel = require("../models/events");
 const eventRequestHelper = require("../helpers/eventRequest");
 
-const parseConfig = (items) => {
+const getCTUuid = (item, prefixPath = []) => compose(
+	(id) => id !== null ? id.toString() : id,
+	pathOr(__, prefixPath.concat(["contentType", "_id"]), item),
+	pathOr(null, prefixPath.concat(["contentType"]))
+)(item);
 
+const parseConfig = (items) => {
 	const contentFilter = (item) => {
-		const ct = _.get(item, "data.contentType.meta.safeLabel");
+		const ct = getCTUuid(item, ["data"]);
 
 		if (!ct) {
 			return false;
 		}
 
 		return (data) => {
-			const ctLabel = _.get(data, "meta.contentType.meta.safeLabel", null);
+			const ctId = getCTUuid(data, ["meta"]);
 
-			return ct === ctLabel;
+			return ct === ctId;
 		};
 	};
 
@@ -102,9 +108,9 @@ class Listener {
 
 	reloadConfig() {
 		return EventsModel.find({})
-            .populate("data.contentType")
-            .lean()
-            .then((response) => this.config = parseConfig.call(this, response));
+			.populate("data.contentType")
+			.lean()
+			.then((response) => this.config = parseConfig.call(this, response));
 	}
 
 	reinitialize() {
