@@ -1,13 +1,13 @@
 {
     "name": "@wcm/dig-events",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "event handler module",
     "main": "app/index.js",
     "scripts": {
         "test": "NODE_ENV=test ./node_modules/.bin/istanbul cover --dir ./coverage ./node_modules/.bin/_mocha -- -R spec -t 15000 --recursive --slow 2"
     },
     "publishConfig": {
-      "@wcm:registry": "https://nexusrepo.antwerpen.be/repository/npm-private"
+        "@wcm:registry": "https://nexusrepo.antwerpen.be/repository/npm-private"
     },
     "keywords": [
         "eventhandler",
@@ -73,11 +73,12 @@
     "author": "Jeroen Valcke <jeroen.valcke@district01.be>",
     "license": "ISC",
     "dependencies": {
+        "@wcm/module-helper": "1.0.0",
         "lodash": "~4.17.4",
         "q": "~1.5.0",
+        "ramda": "0.26.1",
         "request": "~2.81.0",
-        "rootpath": "~0.1.2",
-        "@wcm/module-helper": "1.0.0"
+        "rootpath": "~0.1.2"
     },
     "devDependencies": {
         "@district01/eslint-config": "~1.0.0",
