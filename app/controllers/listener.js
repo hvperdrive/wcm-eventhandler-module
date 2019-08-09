@@ -1,45 +1,52 @@
-var _ = require("lodash");
-var Q = require("q");
+const _ = require("lodash");
+const Q = require("q");
+const { __, compose, pathOr } = require("ramda");
 
-var config = require("config")();
-var Emitter = require("app/middleware/emitter");
-var EventsModel = require("../models/events");
-var eventRequestHelper = require("../helpers/eventRequest");
+const config = require("@wcm/module-helper").getConfig();
+const Emitter = require("@wcm/module-helper").emitter;
+const EventsModel = require("../models/events");
+const eventRequestHelper = require("../helpers/eventRequest");
 
-var parseConfig = function parseConfig(items) {
+const getCTUuid = (item, prefixPath = []) => compose(
+	(id) => id !== null ? id.toString() : id,
+	pathOr(__, prefixPath.concat(["contentType", "_id"]), item),
+	pathOr(null, prefixPath.concat(["contentType"]))
+)(item);
 
-	var contentFilter = function contentFilter(item) {
-		var ct = _.get(item, "data.contentType.meta.safeLabel");
+const parseConfig = (items) => {
+	const contentFilter = (item) => {
+		const ct = getCTUuid(item, ["data"]);
 
 		if (!ct) {
 			return false;
 		}
 
-		return function(data) {
-			var ctLabel = _.get(data, "meta.contentType.meta.safeLabel", null);
+		return (data) => {
+			const ctId = getCTUuid(data, ["meta"]);
 
-			return ct === ctLabel;
+			return ct === ctId;
 		};
 	};
 
-	var setFilter = function setFilter(event, item) {
-		var source = _.get(item, "meta.source", false);
+	const setFilter = (item) => {
+		const source = _.get(item, "meta.source", false);
 
 		if (source === "content") {
 			return contentFilter(item);
 		}
 	};
 
-	var reduceConfigItem = function reduceConfigItem(acc, item) {
+	const reduceConfigItem = (acc, item) => {
+		_.forEach(_.get(item, "data.events", []), (event) => {
+			const eventName = `${item.meta.source}.${event.name}`;
 
-		_.forEach(_.get(item, "data.events", []), function(event) {
-			if (!acc[event.name]) {
-				acc[event.name] = [];
+			if (!acc[eventName]) {
+				acc[eventName] = [];
 			}
 
-			acc[event.name].push({
+			acc[eventName].push({
 				topic: event.topic,
-				filter: setFilter(event, item),
+				filter: setFilter(item),
 			});
 		});
 
@@ -49,20 +56,24 @@ var parseConfig = function parseConfig(items) {
 	return _.reduce(items, reduceConfigItem, {});
 };
 
-var sendEvent = function sendEvent(event, data) {
+const sendEvent = (event, data) => {
 	if (!event || !event.topic || !data) {
 		return Q.reject();
 	}
 
-	var topic = config.name + "_" + event.topic;
+	const topic = config.name + "_" + event.topic;
 
 	return eventRequestHelper("PUT", topic + "/publish", data);
 };
 
-var getRequiredEvents = function getRequiredEvents(name, data) {
-	var eventGroup = this.config[name];
+const getRequiredEvents = function(name, data) {
+	if (this.config === null || !this.config[name]) {
+		return;
+	}
 
-	return _.filter(eventGroup, function(event) {
+	const eventGroup = this.config[name];
+
+	return _.filter(eventGroup, (event) => {
 		if (typeof event.filter === "function") {
 			return event.filter(data);
 		} else if (event.filter === false) {
@@ -73,47 +84,43 @@ var getRequiredEvents = function getRequiredEvents(name, data) {
 	});
 };
 
-var selector = function selector(name, data) {
-	var requiredEvents = getRequiredEvents.call(this, name, data);
+const selector = function selector(name, data) {
+	const requiredEvents = getRequiredEvents.call(this, name, data);
 
 	if (!Array.isArray(requiredEvents) || !requiredEvents.length) {
 		return;
 	}
 
-	_.forEach(requiredEvents, function(event) {
-		Q(sendEvent(event, data));
-	});
+	_.forEach(requiredEvents, (event) => Q(sendEvent(event, data)));
 };
 
-var registerListeners = function registerListeners() {
+const registerListeners = function registerListeners() {
 	Emitter.prependAny(this.cb);
 };
 
-function Listener() {
-	this.config = null;
-	this.cb = selector.bind(this);
+class Listener {
+	constructor() {
+		this.config = null;
+		this.cb = selector.bind(this);
 
-	this.reinitialize.call(this);
+		this.reinitialize();
+	}
+
+	reloadConfig() {
+		return EventsModel.find({})
+			.populate("data.contentType")
+			.lean()
+			.then((response) => this.config = parseConfig.call(this, response));
+	}
+
+	reinitialize() {
+		this.reloadConfig();
+		registerListeners.call(this);
+	}
+
+	removeListeners() {
+		Emitter.offAny(this.cb);
+	}
 }
-
-Listener.prototype.reloadConfig = function reloadConfig() {
-	EventsModel.find({})
-		.populate("data.contentType")
-		.lean()
-		.then(
-			function onSuccess(response) {
-				this.config = parseConfig.call(this, response);
-			}.bind(this)
-		);
-};
-
-Listener.prototype.reinitialize = function reinitialize() {
-	this.reloadConfig.call(this);
-	registerListeners.call(this);
-};
-
-Listener.prototype.removeListeners = function removeListeners() {
-	Emitter.offAny(this.cb);
-};
 
 module.exports = new Listener();

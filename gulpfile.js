@@ -1,17 +1,12 @@
-"use strict";
-
-var gulp = require("gulp");
-var zip = require("gulp-zip");
-var clean = require("gulp-clean");
-var apidocSwagger = require("gulp-apidoc-swagger");
-var runSequence = require("run-sequence");
-var angularTemplatecache = require("gulp-angular-templatecache");
-var replace = require("gulp-replace");
-var fs = require("fs");
-var packageConfig = JSON.parse(fs.readFileSync("./package.json"));
+const gulp = require("gulp");
+const apidocSwagger = require("gulp-apidoc-swagger");
+const angularTemplatecache = require("gulp-angular-templatecache");
+const replace = require("gulp-replace");
+const fs = require("fs");
+const packageConfig = JSON.parse(fs.readFileSync("./package.json"));
 
 // Generate swagger documentation
-gulp.task("swagger", function() {
+gulp.task("swagger", () => {
 	apidocSwagger.exec({
 		src: "app/controllers/", // To get limited frontend data replace with  'swagger/input''
 		dest: "swagger/output",
@@ -24,35 +19,18 @@ gulp.task("swagger", function() {
 		.pipe(gulp.dest("./swagger/output/acpaas"));
 });
 
-// Copy all the necessary files into a temp folder
-gulp.task("prepareBuild", function() {
-	return gulp.src(["./app/**/*", "./public/**/*", "./package.json"], { base: "." })
-		.pipe(gulp.dest("./dist/source/" + packageConfig.name + "_" + packageConfig.version));
-});
-// Zip the content of the temporary folder an put it in the dist/zip folder
-gulp.task("executeBuild", function() {
-	return gulp.src(["./dist/source/" + packageConfig.name + "_" + packageConfig.version + "/**/*"], { base: "./dist/source/" })
-		.pipe(zip(packageConfig.name + "_" + packageConfig.version + ".zip"))
-		.pipe(gulp.dest("./dist/zip"));
-});
-// Remove the temporary source folder.
-gulp.task("finishBuild", function() {
-	return gulp.src("./dist/source", { read: false })
-		.pipe(clean());
-});
-
-gulp.task("templateCache", function() {
+gulp.task("templateCache", () => {
 	return gulp.src("./public/app/**/*.template.html")
 		.pipe(angularTemplatecache({
-			module: packageConfig.name + "_" + packageConfig.version,
-			root: "app/modules/" + packageConfig.name + "_" + packageConfig.version + "/public/app/",
+			module: packageConfig.wcmModule.moduleConfig.angularModule + "_" + packageConfig.version,
+			root: "app/modules/" + packageConfig.wcmModule.moduleConfig.angularModule  + "_" + packageConfig.version + "/public/app/",
 		}))
 		.pipe(gulp.dest("./public/app/template-cache"));
 });
 
 // Utility function for bumping the version at the desired level in the package.json file.
-var bumpVersion = function bumpVersion(level) {
-	var versionArr = packageConfig.version.split(".");
+const bumpVersion = (level) => {
+	const versionArr = packageConfig.version.split(".");
 
 	versionArr[level] = "" + (parseInt(versionArr[level]) + 1);
 
@@ -67,64 +45,32 @@ var bumpVersion = function bumpVersion(level) {
 	return packageConfig.version;
 };
 
-var bumpAngularModuleVersion = function bumpAngularModuleVersion(version) {
-	var reg = new RegExp("\"" + packageConfig.name + "_[0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,}", "g");
-	var reg2 = new RegExp("version: \"[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}\",", "g");
+const bumpAngularModuleVersion = (version) => {
+	const reg = new RegExp("\"" + packageConfig.wcmModule.moduleConfig.angularModule  + "_[0-9]{1,}\\.[0-9]{1,}\\.[0-9]{1,}", "g");
+	const reg2 = new RegExp("version: \"[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}\",", "g");
 
 	return gulp.src(["./public/app/**/*.js"])
-		.pipe(replace(reg, "\"" + packageConfig.name + "_" + version))
+		.pipe(replace(reg, "\"" + packageConfig.wcmModule.moduleConfig.angularModule  + "_" + version))
 		.pipe(replace(reg2, "version: \"" + version + "\","))
 		.pipe(gulp.dest("./public/app"));
 
 };
 
 // Bump patch version (x.x.[patch version])
-gulp.task("bumpPatchVersion", function() {
-	var newVersion = bumpVersion(2);
+gulp.task("bumpPatch", function() {
+	const newVersion = bumpVersion(2);
 
 	return bumpAngularModuleVersion(newVersion);
 });
 // Bump minor version(x.[minor version].x)
-gulp.task("bumpMinorVersion", function() {
-	var newVersion = bumpVersion(1);
+gulp.task("bumpMinor", function() {
+	const newVersion = bumpVersion(1);
 
 	return bumpAngularModuleVersion(newVersion);
 });
 // Bump major version([magjor version].x.x)
-gulp.task("bumpMajorVersion", function() {
-	var newVersion = bumpVersion(0);
+gulp.task("bumpMajor", function() {
+	const newVersion = bumpVersion(0);
 
 	return bumpAngularModuleVersion(newVersion);
-});
-
-// Bump the patch version and then build
-gulp.task("buildPatch", function() {
-	runSequence(
-		"bumpPatchVersion",
-		"build"
-	);
-});
-// Bump the minor version and then build
-gulp.task("buildMinor", function() {
-	runSequence(
-		"bumpMinorVersion",
-		"build"
-	);
-});
-// Bump the major version and then build
-gulp.task("buildMajor", function() {
-	runSequence(
-		"bumpMajorVersion",
-		"build"
-	);
-});
-
-// build the module
-gulp.task("build", function() {
-	runSequence(
-		"templateCache",
-		"prepareBuild",
-		"executeBuild",
-		"finishBuild"
-	);
 });

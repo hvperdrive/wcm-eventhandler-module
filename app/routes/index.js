@@ -1,8 +1,5 @@
-var hooksController = require("../controllers/hooks");
+const eventRoutes = require("./events");
 
-module.exports = function(app, hooks) {
-	// Handle hooks
-	hooksController(hooks);
-	// Initiate listening to events
-	require("../controllers/listener");
+module.exports = (app) => {
+	eventRoutes(app);
 };

@@ -12,8 +12,12 @@ var contentNewsItemMock = require("test/mocks/contentNewsItemMock");
 require("rewire-global").enable();
 
 var listener = proxyquire("app/controllers/listener", {
-	"config": configMock,
-	"app/middleware/emitter": emitterMock,
+	"@wcm/module-helper": {
+		getConfig: configMock,
+		emitter: emitterMock,
+		"@noCallThru": true,
+		"@noPreserveCache": true,
+	},
 	"../helpers/eventRequest": function eventRequest() {
 		return Q.when(arguments);
 	},
@@ -40,10 +44,12 @@ describe("ListenerController", function() {
 
 	describe("registerListeners", function() {
 		beforeEach(function() {
-			emitterMock.removeAllListeners();
+			emitterMock.offAny();
 		});
 
-		it("Should listen on 5 events when events mock is passed", function() {
+		it("Should listen on all events when events mock is passed", function() {
+			expect(emitterMock.listenersAny()).to.have.length(0);
+
 			var registerListeners = listener.__get__("registerListeners");
 
 			registerListeners.call(listener);
@@ -103,7 +109,8 @@ describe("ListenerController", function() {
 
 	describe("removeListeners", function() {
 		beforeEach(function() {
-			emitterMock.removeAllListeners();
+			emitterMock.offAny();
+			listener.reinitialize();
 		});
 		it("Should remove all the listeners registered", function() {
 			expect(emitterMock.listenersAny().length).to.be.greaterThan(0);

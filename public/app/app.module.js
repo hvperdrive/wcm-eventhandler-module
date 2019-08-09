@@ -1,18 +1,18 @@
 "use strict";
 
-angular.module("dig-events_0.0.117.directives", []);
-angular.module("dig-events_0.0.117.factories", []);
-angular.module("dig-events_0.0.117.services", ["dig-events_0.0.117.factories"]);
-angular.module("dig-events_0.0.117.controllers", ["dig-events_0.0.117.services"]);
+angular.module("dig-events_1.0.4.directives", []);
+angular.module("dig-events_1.0.4.factories", []);
+angular.module("dig-events_1.0.4.services", ["dig-events_1.0.4.factories"]);
+angular.module("dig-events_1.0.4.controllers", ["dig-events_1.0.4.services"]);
 
-angular.module("dig-events_0.0.117", [
+angular.module("dig-events_1.0.4", [
 
 	"pelorus.services",
 
-	"dig-events_0.0.117.directives",
-	"dig-events_0.0.117.factories",
-	"dig-events_0.0.117.services",
-	"dig-events_0.0.117.controllers",
+	"dig-events_1.0.4.directives",
+	"dig-events_1.0.4.factories",
+	"dig-events_1.0.4.services",
+	"dig-events_1.0.4.controllers",
 
 ])
 .run([function() {

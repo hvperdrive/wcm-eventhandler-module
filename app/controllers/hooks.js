@@ -1,35 +1,19 @@
-var variablesHelper = require("../helpers/variables");
-var eventListener = require("./listener");
+const eventListener = require("./listener");
 
-var onConfigurationChanged = function onConfigurationChanged() {
-	// Reload config
-	variablesHelper.reload();
-};
-
-var beforeRemove = function beforeRemove() {
+const beforeRemove = () => {
 	eventListener.removeListeners();
 };
 
-var beforeDisable = function beforeDisable() {
+const beforeDisable = () => {
 	eventListener.removeListeners();
 };
 
-var onEnabled = function onEnabled() {
+const onEnabled = () => {
 	eventListener.reinitialize();
 };
 
-var onLoadComplete = function onLoadComplete() {
-	variablesHelper.reload();
-};
-
-module.exports = function handleHooks(hooks) {
-	var myHooks = {
-		onConfigurationChanged: onConfigurationChanged,
-		beforeRemove: beforeRemove,
-		beforeDisable: beforeDisable,
-		onEnabled: onEnabled,
-		onLoadComplete: onLoadComplete,
-	};
-
-	Object.assign(hooks, myHooks);
-};
+module.exports = (hooks) => Object.assign(hooks, {
+	beforeRemove: beforeRemove,
+	beforeDisable: beforeDisable,
+	onEnabled: onEnabled,
+});

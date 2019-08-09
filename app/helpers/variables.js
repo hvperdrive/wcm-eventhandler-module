@@ -1,24 +1,25 @@
-var VariableHelper = require("app/helpers/modules/lib").Variables;
-var packageConfig = require("../../package.json");
+const Q = require("q");
 
-var variables = null;
+const VariableHelper = require("@wcm/module-helper").variables;
+const packageConfig = require("../../package.json");
 
-var init = function init() {
-	VariableHelper.getAll(packageConfig.name, packageConfig.version)
-		.then(function onSuccess(response) {
-			variables = response;
-		})
-		.catch(function onError(responseError) {
-			console.error("Failed getting variables (eventhandler module)");
-			console.error(responseError);
-		});
+let packageInfo = null;
+
+const setPackageInfo = module.exports.setPackageInfo = (info) => {
+	packageInfo = info || packageInfo;
 };
 
-init();
-
-module.exports = function getVariables() {
-	return variables;
+module.exports.getPackageInfo = () => {
+	return packageInfo;
 };
 
-module.exports.reload = init;
+module.exports.get = (info) => {
+	setPackageInfo(info);
+
+	if (packageInfo === null) {
+		return Q.reject("No packageInfo available", packageConfig.name);
+	}
+
+	return VariableHelper.getAll(packageInfo.name, packageInfo.version);
+};
 
