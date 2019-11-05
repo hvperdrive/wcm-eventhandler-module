@@ -39,6 +39,6 @@ module.exports.update = (oldTopic, newTopic) => remove(oldTopic)
 		() => create(newTopic)
 	)
 	.then(() => {
-	listenerController.reloadConfig();
-	return newTopic;
-});
+		listenerController.reloadConfig();
+		return newTopic;
+	});
