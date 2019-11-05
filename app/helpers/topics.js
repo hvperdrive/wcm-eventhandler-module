@@ -27,18 +27,18 @@ const remove = module.exports.remove = (event) => {
 	);
 
 	return Q.all(promises)
-        .then(() => {
-	listenerController.reloadConfig();
-	return event;
-});
+		.then(() => {
+			listenerController.reloadConfig();
+			return event;
+		});
 };
 
 module.exports.update = (oldTopic, newTopic) => remove(oldTopic)
-    .then(
-        () => create(newTopic),
-        () => create(newTopic)
-    )
-    .then(() => {
+	.then(
+		() => create(newTopic),
+		() => create(newTopic)
+	)
+	.then(() => {
 	listenerController.reloadConfig();
 	return newTopic;
 });
