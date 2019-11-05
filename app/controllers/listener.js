@@ -7,22 +7,23 @@ const Emitter = require("@wcm/module-helper").emitter;
 const EventsModel = require("../models/events");
 const eventRequestHelper = require("../helpers/eventRequest");
 
-const getCTUuid = (item, prefixPath = []) => compose(
-	(id) => id !== null ? id.toString() : id,
-	pathOr(__, prefixPath.concat(["contentType", "_id"]), item),
-	pathOr(null, prefixPath.concat(["contentType"]))
-)(item);
+const getCTUuid = (item, prefixPath = []) =>
+	compose(
+		(id) => (id !== null ? id.toString() : id),
+		pathOr(__, prefixPath.concat([ "contentType", "_id" ]), item),
+		pathOr(null, prefixPath.concat([ "contentType" ]))
+	)(item);
 
 const parseConfig = (items) => {
 	const contentFilter = (item) => {
-		const ct = getCTUuid(item, ["data"]);
+		const ct = getCTUuid(item, [ "data" ]);
 
 		if (!ct) {
 			return false;
 		}
 
 		return (data) => {
-			const ctId = getCTUuid(data, ["meta"]);
+			const ctId = getCTUuid(data, [ "meta" ]);
 
 			return ct === ctId;
 		};
@@ -110,15 +111,20 @@ class Listener {
 		return EventsModel.find({})
 			.populate("data.contentType")
 			.lean()
-			.then((response) => this.config = parseConfig.call(this, response));
+			.then((response) => (this.config = parseConfig.call(this, response)));
 	}
 
 	reinitialize() {
 		this.reloadConfig();
+		this.removeListeners();
 		registerListeners.call(this);
 	}
 
 	removeListeners() {
+		if (!Array.isArray(Emitter.listenersAny()) || !Emitter.listenersAny().length) {
+			return;
+		}
+
 		Emitter.offAny(this.cb);
 	}
 }
