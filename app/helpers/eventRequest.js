@@ -27,9 +27,7 @@ module.exports = (method, path, body) => {
 			});
 		}
 
-        console.log('REQUEST', reqOptions)
 		request(reqOptions, (error, response, b) => {
-            console.log(error, response.body)
 			if (error || !response || response.statusCode >= 400) {
 				return d.reject(error || b);
 			}
