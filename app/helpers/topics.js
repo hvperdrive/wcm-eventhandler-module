@@ -48,8 +48,8 @@ const remove = module.exports.remove = (event) => {
 
 module.exports.update = (oldTopic, newTopic) => remove(oldTopic)
 	.then(
-		() => create(newTopic, true),
-		() => create(newTopic, true)
+		() => create(newTopic),
+		() => create(newTopic)
 	)
 	.then(() => {
 		listenerController.reloadConfig();
