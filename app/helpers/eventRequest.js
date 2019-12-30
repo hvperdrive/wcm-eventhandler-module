@@ -12,7 +12,7 @@ module.exports = (method, path, body) => {
 		const namespace = _.get(variables, "eventHandler.variables.namespace", "");
 
 		const reqOptions = {
-			url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + namespace + "/" + path,
+			url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + "namespaces/" + namespace + "/" + path,
 			method: method,
 			headers: {
 				"owner-key": _.get(variables, "eventHandler.variables.ownerKey"),
@@ -27,7 +27,9 @@ module.exports = (method, path, body) => {
 			});
 		}
 
+        console.log('REQUEST', reqOptions)
 		request(reqOptions, (error, response, b) => {
+            console.log(error, response.body)
 			if (error || !response || response.statusCode >= 400) {
 				return d.reject(error || b);
 			}
