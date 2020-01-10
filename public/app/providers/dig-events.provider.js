@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("dig-events_1.0.5")
+angular.module("dig-events_2.0.0")
 	.provider("digEventsConfig", [
 		"MODULE_ENV_CONFIG",
 
@@ -8,7 +8,7 @@ angular.module("dig-events_1.0.5")
 
 			this.API = {
 				name: MODULE_ENV_CONFIG.angularModule,
-				version: "1.0.5",
+				version: "2.0.0",
 				feDirPath: MODULE_ENV_CONFIG.feDirPath,
 				assetsDirPath: MODULE_ENV_CONFIG.assetsDirPath,
 				cssDirPath: MODULE_ENV_CONFIG.cssDirPath,
