@@ -7,16 +7,20 @@ const variablesHelper = require("../helpers/variables");
 module.exports = (method, path, body) => {
 	const d = Q.defer();
 
+	console.log('SEND AN EVENT :pray:')
+
 	variablesHelper.get().then((variables) => {
-		const apiDomain = _.get(variables, "eventHandler.variables.apiDomain", "");
-		const namespace = _.get(variables, "eventHandler.variables.namespace", "");
+		const apiDomain = _.get(variables, "publicContract.variables.apiDomain", "");
+		const namespace = _.get(variables, "publicContract.variables.namespace", "wcm");
+		const apikey = _.get(variables, "publicContract.variables.apikey", "");
+		const ownerKey = _.get(variables, "publicContract.variables.ownerKey", "");
 
 		const reqOptions = {
-			url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + "namespaces/" + namespace + "/" + path,
+			url: apiDomain + (apiDomain.endsWith("/") ? "" : "/") + "namespaces/" + namespace + "/topics/" + path,
 			method: method,
 			headers: {
-				"owner-key": _.get(variables, "eventHandler.variables.ownerKey"),
-				"apikey": _.get(variables, "eventHandler.variables.apikey"),
+				"apikey": apikey,
+				"owner-key": ownerKey
 			},
 		};
 
@@ -35,7 +39,7 @@ module.exports = (method, path, body) => {
 			return d.resolve(b);
 		});
 	})
-        .catch(d.reject);
+		.catch(d.reject);
 
 	return d.promise;
 };

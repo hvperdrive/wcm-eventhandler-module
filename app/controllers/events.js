@@ -3,7 +3,7 @@ const ERROR_TYPES = require(path.join(process.cwd(), "app/middleware/errorInterc
 const Emitter = require("@wcm/module-helper").emitter;
 
 const EventsModel = require("../models/events");
-const topicsHelper = require("../helpers/topics");
+const listenerController = require("../controllers/listener");
 
 module.exports.list = (req, res) => {
 	let result = ["contentUpdated", "contentCreated", "contentRemoved"];
@@ -90,11 +90,12 @@ module.exports.update = (req, res) => {
 		.then((oldEvent) => {
 			return EventsModel.findOneAndUpdate({ uuid: req.params.uuid }, req.body, { new: true, setDefaultsOnInsert: true })
 				.then((newEvent) => {
-					if (newEvent) {
-						return topicsHelper.update(oldEvent, newEvent);
+					if (!newEvent) {
+						throw { status: 404, err: "Event width uuid: '" + req.params.uuid + "' not found" };
 					}
 
-					throw { status: 404, err: "Event width uuid: '" + req.params.uuid + "' not found" };
+					listenerController.reloadConfig();
+					return newEvent;
 				});
 		})
 		.then(
@@ -119,7 +120,8 @@ module.exports.create = (req, res) => {
 				throw "Event not saved!";
 			}
 
-			return topicsHelper.create(event);
+			listenerController.reloadConfig();
+			return event;
 		})
 		.then(
 			(event) => res.status(200).json(event),
@@ -147,8 +149,12 @@ module.exports.remove = (req, res) => {
 	}
 
 	EventsModel.findOne({ uuid: req.params.uuid })
-		.then((event) => EventsModel.remove({ uuid: req.params.uuid }).then(() => event))
-		.then(topicsHelper.remove)
+		.then((event) => {
+			listenerController.reloadConfig();
+
+			return EventsModel.remove({ uuid: req.params.uuid })
+				.then(() => event)
+		})
 		.then(
 			() => res.status(204).send(),
 			(responseError) => res.status(400).json(responseError)
