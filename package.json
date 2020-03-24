@@ -1,106 +1,100 @@
 {
-    "name": "@wcm/dig-events",
-    "version": "2.0.0",
-    "description": "event handler module",
-    "main": "app/index.js",
-    "scripts": {
-        "test": "NODE_ENV=test ./node_modules/.bin/istanbul cover --dir ./coverage ./node_modules/.bin/_mocha -- -R spec -t 15000 --recursive --slow 2"
-    },
-    "publishConfig": {
-        "@wcm:registry": "https://nexusrepo.antwerpen.be/repository/npm-private/"
-    },
-    "keywords": [
-        "eventhandler",
-        "event"
-    ],
-    "wcmModule": {
-        "angularDirPath": "public/app/",
-        "assetsDirPath": "public/assets/",
-        "cssDirPath": "public/assets/css/",
-        "moduleConfig": {
-            "angularModule": "dig-events",
-            "translationKey": "Events",
-            "operationType": "dig-events",
-            "icon": "bolt",
-            "type": "system",
-            "navigationItem": true,
-            "authentication": {
-                "requiresLogin": true
-            }
-        },
-        "variables": [
-            {
-                "group": "Config",
-                "key": "eventHandler",
-                "accordion": true,
-                "variables": [
-                    {
-                        "label": "Event handler domain",
-                        "description": "Event handler API domain.",
-                        "key": "apiDomain",
-                        "value": "",
-                        "type": "text",
-                        "required": true
-                    },
-                    {
-                        "label": "Namespace",
-                        "description": "The namespace to send the events (usually 'wcm')",
-                        "key": "namespace",
-                        "value": "",
-                        "type": "text",
-                        "required": true
-                    },
-                    {
-                        "label": "Owner key",
-                        "description": "The owner key of the eventhandler namespace.",
-                        "key": "ownerKey",
-                        "value": "",
-                        "type": "text",
-                        "required": true
-                    },
-                    {
-                        "label": "apikey",
-                        "description": "You're api-store apikey",
-                        "key": "apikey",
-                        "value": "",
-                        "type": "text",
-                        "required": true
-                    }
-                ]
-            }
-        ]
-    },
-    "author": "Jeroen Valcke <jeroen.valcke@district01.be>",
-    "license": "ISC",
-    "dependencies": {
-        "@wcm/module-helper": "1.0.0",
-        "lodash": "~4.17.4",
-        "q": "~1.5.0",
-        "ramda": "0.26.1",
-        "request": "~2.81.0",
-        "rootpath": "~0.1.2"
-    },
-    "devDependencies": {
-        "@district01/eslint-config": "~1.0.0",
-        "apidoc-swagger": "git+https://github.com/JvJefke/apidoc-swagger.git",
-        "chai": "~3.5.0",
-        "eslint": "~3.19.0",
-        "eventemitter2": "^4.1.2",
-        "gulp": "~3.9.1",
-        "gulp-angular-templatecache": "~2.0.0",
-        "gulp-apidoc": "~0.2.0",
-        "gulp-apidoc-swagger": "~0.2.2",
-        "gulp-replace": "~0.5.4",
-        "install": "~0.8.4",
-        "istanbul": "~0.4.5",
-        "jshint": "~2.9.4",
-        "mocha": "~3.4.1",
-        "mockery": "~2.0.0",
-        "mongoose": "~4.9.9",
-        "nock": "~9.0.13",
-        "node-uuid": "~1.4.8",
-        "proxyquire": "~1.8.0",
-        "rewire": "~2.5.2",
-        "rewire-global": "~1.0.11"
-    }
+	"name": "@wcm/dig-events",
+	"version": "2.0.0",
+	"description": "event handler module",
+	"main": "app/index.js",
+	"scripts": {
+		"test": "NODE_ENV=test ./node_modules/.bin/istanbul cover --dir ./coverage ./node_modules/.bin/_mocha -- -R spec -t 15000 --recursive --slow 2"
+	},
+	"publishConfig": {
+		"@wcm:registry": "https://nexusrepo.antwerpen.be/repository/npm-private/"
+	},
+	"keywords": [
+		"eventhandler",
+		"event"
+	],
+	"wcmModule": {
+		"angularDirPath": "public/app/",
+		"assetsDirPath": "public/assets/",
+		"cssDirPath": "public/assets/css/",
+		"moduleConfig": {
+			"angularModule": "dig-events",
+			"translationKey": "Events",
+			"operationType": "dig-events",
+			"icon": "bolt",
+			"type": "system",
+			"navigationItem": true,
+			"authentication": {
+				"requiresLogin": true
+			}
+		},
+		"variables": [{
+			"group": "Public contract details",
+			"key": "publicContract",
+			"accordion": false,
+			"variables": [{
+					"label": "Event handler domain",
+					"description": "Event handler API domain.",
+					"key": "apiDomain",
+					"value": "",
+					"type": "text",
+					"required": true
+				},
+				{
+					"label": "Namespace",
+					"description": "The namespace to send the events",
+					"key": "namespace",
+					"value": "wcm",
+					"type": "text"
+				},
+				{
+					"label": "Apikey",
+					"description": "Your api-store apikey",
+					"key": "apikey",
+					"value": "",
+					"type": "text"
+				},
+				{
+					"label": "Owner key",
+					"description": "The namespace owner key",
+					"key": "ownerKey",
+					"value": "",
+					"type": "text"
+				}
+			]
+		}]
+	},
+	"author": "Jeroen Valcke <jeroen.valcke@district01.be>",
+	"license": "ISC",
+	"dependencies": {
+		"@wcm/module-helper": "1.0.0",
+		"lodash": "~4.17.4",
+		"q": "~1.5.0",
+		"ramda": "0.26.1",
+		"request": "~2.81.0",
+		"rootpath": "~0.1.2"
+	},
+	"devDependencies": {
+		"@district01/eslint-config": "~1.0.0",
+		"apidoc-swagger": "git+https://github.com/JvJefke/apidoc-swagger.git",
+		"chai": "~3.5.0",
+		"eslint": "~3.19.0",
+		"eventemitter2": "^4.1.2",
+		"gulp": "~3.9.1",
+		"gulp-angular-templatecache": "~2.0.0",
+		"gulp-apidoc": "~0.2.0",
+		"gulp-apidoc-swagger": "~0.2.2",
+		"gulp-replace": "~0.5.4",
+		"install": "~0.8.4",
+		"istanbul": "~0.4.5",
+		"jshint": "~2.9.4",
+		"mocha": "~3.4.1",
+		"mockery": "~2.0.0",
+		"mongoose": "~4.9.9",
+		"nock": "~9.0.13",
+		"node-uuid": "~1.4.8",
+		"proxyquire": "~1.8.0",
+		"rewire": "~2.5.2",
+		"rewire-global": "~1.0.11"
+	}
 }
