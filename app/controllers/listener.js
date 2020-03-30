@@ -62,9 +62,9 @@ const sendEvent = (event, data) => {
 		return Q.reject();
 	}
 
-	const topic = config.name + "_" + event.topic;
+	const topic = event.topic;
 
-	return eventRequestHelper("PUT", topic + "/publish", data);
+	return eventRequestHelper("POST", topic + "/publish", data);
 };
 
 const getRequiredEvents = function(name, data) {
@@ -111,7 +111,9 @@ class Listener {
 		return EventsModel.find({})
 			.populate("data.contentType")
 			.lean()
-			.then((response) => (this.config = parseConfig.call(this, response)));
+			.then((response) => {
+				this.config = parseConfig.call(this, response)
+			});
 	}
 
 	reinitialize() {

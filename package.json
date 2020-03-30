@@ -1,6 +1,6 @@
 {
     "name": "@wcm/dig-events",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "event handler module",
     "main": "app/index.js",
     "scripts": {
@@ -30,9 +30,9 @@
         },
         "variables": [
             {
-                "group": "Config",
-                "key": "eventHandler",
-                "accordion": true,
+                "group": "Public contract details",
+                "key": "publicContract",
+                "accordion": false,
                 "variables": [
                     {
                         "label": "Event handler domain",
@@ -44,27 +44,24 @@
                     },
                     {
                         "label": "Namespace",
-                        "description": "The namespace to send the events (usually 'wcm')",
+                        "description": "The namespace to send the events",
                         "key": "namespace",
+                        "value": "wcm",
+                        "type": "text"
+                    },
+                    {
+                        "label": "Apikey",
+                        "description": "Your api-store apikey",
+                        "key": "apikey",
                         "value": "",
-                        "type": "text",
-                        "required": true
+                        "type": "text"
                     },
                     {
                         "label": "Owner key",
-                        "description": "The owner key of the eventhandler namespace.",
+                        "description": "The namespace owner key",
                         "key": "ownerKey",
                         "value": "",
-                        "type": "text",
-                        "required": true
-                    },
-                    {
-                        "label": "apikey",
-                        "description": "You're api-store apikey",
-                        "key": "apikey",
-                        "value": "",
-                        "type": "text",
-                        "required": true
+                        "type": "text"
                     }
                 ]
             }
