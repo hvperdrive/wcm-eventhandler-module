@@ -52,7 +52,7 @@ const parseConfig = (items) => {
 		});
 
 		return acc;
-    };
+	};
 
 	return _.reduce(items, reduceConfigItem, {});
 };
@@ -86,11 +86,11 @@ const getRequiredEvents = function(name, data) {
 };
 
 const selector = function selector(name, data) {
-    const requiredEvents = getRequiredEvents.call(this, name, data);
+	const requiredEvents = getRequiredEvents.call(this, name, data);
 
 	if (!Array.isArray(requiredEvents) || !requiredEvents.length) {
 		return;
-    }
+	}
 
 	_.forEach(requiredEvents, (event) => Q(sendEvent(event, data)));
 };
@@ -112,14 +112,14 @@ class Listener {
 			.populate("data.contentType")
 			.lean()
 			.then((response) => {
-                this.config = parseConfig.call(this, response)
-            });
+				this.config = parseConfig.call(this, response)
+			});
 	}
 
 	reinitialize() {
 		this.reloadConfig();
 		this.removeListeners();
-        registerListeners.call(this);
+		registerListeners.call(this);
 	}
 
 	removeListeners() {
